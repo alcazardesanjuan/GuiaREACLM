@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="es">
+<head>
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="content.css" />
+<link rel="stylesheet" type="text/css" href="nav.css" />
+<meta http-equiv="content-type" content="text/html;  charset=utf-8" />
+<title>Módulo 3: Especificidad en el Prompt | Guía para la elaboración de REA </title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<meta name="author" content="Servicio de Innovación. Consejería de Educación, Cultura y Deportes de Castilla La Mancha" />
+<link rel="license" type="text/html" href="http://creativecommons.org/licenses/by-sa/4.0/" />
+<meta name="generator" content="eXeLearning 2.9 - exelearning.net" />
+<!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->
+<script type="text/javascript" src="exe_jquery.js"></script>
+<script type="text/javascript" src="common_i18n.js"></script>
+<script type="text/javascript" src="common.js"></script>
+<link rel="stylesheet" type="text/css" href="udl-content.css" />
+<script type="text/javascript" src="udl-content.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"  type="text/css">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap" rel="stylesheet" type="text/css">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"  type="text/css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"  type="text/css">
+
+
+<style>
+  
+  .z-index {
+    z-index: 999;
+  }
+
+  .select-container {
+    display: inline-block;
+    position: relative;
+    z-index: 999;
+  }
+
+  .font-button {
+    padding: 8px 16px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 8px;
+    text-align: center;
+    text-decoration: none;
+    background-color: white;
+    color: black;
+    z-index: 999;
+  }
+
+  .fontButtonContainer {
+     z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* establece el wrap para que los botones se distribuyan en varias líneas */
+    gap: 5px; /* ajusta el espacio entre los botones */
+    position: static; /* fija la barra de botones en la página: static para que aparezca en la parte superior, fixed para que quede flotando */
+    top: 40px; /* fija la barra de botones en la parte superior de la página */
+    left: 0; /* fija la barra de botones en el margen izquierdo */
+    right: 0; /* fija la barra de botones en el margen derecho */
+    margin: auto; /* centra la barra de botones horizontalmente */
+  }
+    
+  /* Estilo para el desplegable */
+  select {
+    padding: 8px 4px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 6px;
+    text-align: center;
+    text-decoration: none;
+    background-color: white;
+  }
+  
+  select option {
+  text-align: left;
+  }
+  
+</style>
+
+<script>
+
+// BatexeGo v3 Juan José de Haro 
+
+// Define los textos que se ven en pantalla. Reemplazar el texto entre comillas
+
+  // Textos del menú desplegable
+    const defaultText = 'Parámetros por defecto:'; //Descripción de la opción por defecto
+    const standardText = 'Fuente estándar'; // Fuente original del documento
+    
+    const dyslexicDesc = 'Dislexia:'; // Descripción de la opción OpenDyslexic  
+    const dyslexicText = 'OpenDyslexic'; 
+    
+    const hyperlegibleDesc = 'Deficiencias visuales:'; // Descripción de la opción Atkinson Hyperlegible
+    const hyperlegibleText = 'Atkinson Hyperlegible'; 
+    
+    const highLegibilityDesc = 'Alta legibilidad:'; // Descripción de las opciones de alta legibilidad
+    const opensansText = 'OpenSans'; 
+    const robotoText = 'Roboto'; 
+    const latoText = 'Lato'; 
+    const montserratText = 'Montserrat'; 
+
+  // Botones aumentar y disminuir fuente
+    const increaseFontText = 'A+'; // Botón para incrementar la fuente
+    const increaseFontTitle = 'Incrementa la fuente'; // Texto emergente al pasar el ratón
+    
+    const decreaseFontText = 'A-'; // Botón para reducir la fuente
+    const decreaseFontTitle = 'Reduce la fuente'; // Texto emergente al pasar el ratón
+
+  // Botón para traducir
+    const translateText = '🌐'; // Texto para el botón de traducción de Google
+    const translateTitle = 'Traduce la página'; // Texto emergente al pasar el ratón
+
+  // Botón para leer / detener la lectura en voz alta
+    let readText = 'Leer'; // Botón para leer en voz alta el contenido de la página
+    const readTextTitle ='Lee en voz alta la selección o la página entera'; // Texto emergente al pasar el ratón
+    
+    const stopText = 'Detener'; // Texto del botón para detener la lectura
+    const stopTextTitle = 'Detiene la lectura'; // Texto emergente al pasar el ratón
+  
+  // Botones para que los botones estén siempre visibles
+    let floatingFix = 'Fijar'; // Texto del botón flotante cuando está sobre el texto
+    let floatingFixTitle = 'Fija la barra de botones en la parte superior'; // Texto emergente al pasar el ratón
+    
+    let floatingFloat = 'Flotar'; //Texto del botón flotante cuando está fijo en la parte superior
+    let floatingFloatTitle = 'La barra permanecerá siempre visible';
+  
+  
+  // Enlace +Info
+    const infoText = '+Info'; // Texto del enlace +Info
+    const infoTextLink = 'https://batexego.bilateria.org'; // Destino del enlace de +Info
+
+// Fin 
+  
+
+  readText = `${readText} (${document.documentElement.lang})`; //Se añade el idioma al botón Leer
+  
+
+  let originalFont;
+  let currentFontSize;
+  let originalFontSize;
+  let isReading = false;
+  let utterance = new SpeechSynthesisUtterance();
+  let googleTranslateWidgetVisible = localStorage.getItem('googleTranslateWidgetVisible');
+
+  function setFont(font) {
+  document.body.style.fontFamily = font;
+  localStorage.setItem('font', font);
+  }
+
+  function setFontSize(size) {
+  currentFontSize = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size'));
+  currentFontSize += size;
+  document.body.style.fontSize = currentFontSize + 'px';
+  localStorage.setItem('fontSize', currentFontSize + 'px');
+  }
+  
+  
+
+function toggleGoogleTranslateWidget() {
+  if (!googleTranslateWidgetVisible) {
+    const script = document.createElement('script');
+    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    script.id = 'google-translate-script';
+    document.head.appendChild(script);
+    
+    const googleTranslateElement = document.createElement('div');
+    googleTranslateElement.id = 'google_translate_element';
+    googleTranslateElement.style.position = 'fixed';
+    googleTranslateElement.style.top = '0';
+    googleTranslateElement.style.right = '0';
+    googleTranslateElement.style.zIndex = '1000';
+    document.body.appendChild(googleTranslateElement);
+
+    window.googleTranslateElementInit = function() {
+      new google.translate.TranslateElement({pageLanguage: 'auto', layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT}, 'google_translate_element');
+    };
+
+    googleTranslateWidgetVisible = true;
+    
+  } else {
+    const script = document.getElementById('google-translate-script');
+    script.remove();
+    
+    const googleTranslateElement = document.getElementById('google_translate_element');
+    googleTranslateElement.remove();
+
+    googleTranslateWidgetVisible = false;
+  }
+  localStorage.setItem('googleTranslateWidgetVisible',googleTranslateWidgetVisible);
+}
+
+
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    googleTranslateWidgetVisible = JSON.parse(localStorage.getItem('googleTranslateWidgetVisible'));
+  if(googleTranslateWidgetVisible) {
+    googleTranslateWidgetVisible = false;
+    toggleGoogleTranslateWidget();
+  }
+
+    
+  
+    originalFont = window.getComputedStyle(document.body).getPropertyValue('font-family');
+    localStorage.setItem('originalFont', originalFont);
+    let font = localStorage.getItem('font');
+    if (!font) {
+    font = originalFont;
+    }
+    document.body.style.fontFamily = font;
+
+    let fontSize = localStorage.getItem('fontSize');
+    originalFontSize = window.getComputedStyle(document.body).getPropertyValue('font-size');
+    localStorage.setItem('originalFontSize', originalFontSize);
+    if (!fontSize) {
+    fontSize = originalFontSize
+    localStorage.setItem('fontSize', fontSize);
+    }
+    document.body.style.fontSize = fontSize;
+
+    const fontButtonContainer = document.createElement('div');
+    fontButtonContainer.classList.add('fontButtonContainer'); 
+    
+    const selectContainer = document.createElement('div');
+    selectContainer.classList.add('select-container');
+    const select = document.createElement('select');
+    select.classList.add('z-index');
+    const standardOption = document.createElement('option');
+    standardOption.value = 'standard';
+    standardOption.text = standardText;
+
+    const defaultFontOptGroup = document.createElement('optgroup');
+    defaultFontOptGroup.label = defaultText;
+    defaultFontOptGroup.appendChild(standardOption);
+
+    select.appendChild(defaultFontOptGroup);
+
+
+    const dyslexicOption = document.createElement('option');
+    dyslexicOption.value = 'dyslexic';
+    dyslexicOption.text = dyslexicText;
+    select.add(dyslexicOption);
+
+    const dyslexicOptGroup = document.createElement('optgroup');
+    dyslexicOptGroup.label = dyslexicDesc;
+    dyslexicOptGroup.appendChild(dyslexicOption);
+    select.appendChild(dyslexicOptGroup);
+
+    const hyperlegibleOption = document.createElement('option');
+    hyperlegibleOption.value = 'hyperlegible';
+    hyperlegibleOption.text = hyperlegibleText;
+    select.add(hyperlegibleOption);
+
+    const hyperlegibleOptGroup = document.createElement('optgroup');
+    hyperlegibleOptGroup.label = hyperlegibleDesc;
+    hyperlegibleOptGroup.appendChild(hyperlegibleOption);
+    select.appendChild(hyperlegibleOptGroup);
+
+    const opensansOption = document.createElement('option');
+    opensansOption.value = 'Open Sans';
+    opensansOption.text = opensansText;
+    select.add(opensansOption);
+
+    const robotoOption = document.createElement('option');
+    robotoOption.value = 'Roboto';
+    robotoOption.text = robotoText;
+    select.add(robotoOption);
+
+    const latoOption = document.createElement('option');
+    latoOption.value = 'Lato';
+    latoOption.text = latoText;
+    select.add(latoOption);
+
+    const montserratOption = document.createElement('option');
+    montserratOption.value = 'Montserrat';
+    montserratOption.text = montserratText;
+    select.add(montserratOption);  
+    
+
+    const highLegibilityOptGroup = document.createElement('optgroup');
+    highLegibilityOptGroup.label = highLegibilityDesc;
+    highLegibilityOptGroup.appendChild(latoOption);
+    highLegibilityOptGroup.appendChild(montserratOption);
+    highLegibilityOptGroup.appendChild(opensansOption);
+    highLegibilityOptGroup.appendChild(robotoOption);
+    
+    
+    
+    select.appendChild(highLegibilityOptGroup);
+
+    // Seleccionar la opción correspondiente al cargar la página
+    if (font === originalFont) { // Nueva condición
+    select.selectedIndex = 0; // Nueva línea
+    } else if (font === 'OpenDyslexic') {
+    select.selectedIndex = 1;
+    } else if (font === 'Atkinson Hyperlegible') {
+    select.selectedIndex = 2;
+    } else if (font === 'Roboto') {
+    select.selectedIndex = 6;
+    } else if (font === 'Lato') {
+    select.selectedIndex = 3;
+    } else if (font === 'Open Sans') {
+    select.selectedIndex = 5;
+    } else if (font === 'Montserrat') {
+    select.selectedIndex = 4;
+    }
+
+    select.addEventListener('change', () => {
+    const font = select.value;
+    if (font === 'standard') {
+    setFont(originalFont);
+    fontSize = originalFontSize;
+    localStorage.setItem('fontSize', fontSize);
+    document.body.style.fontSize = localStorage.getItem('originalFontSize');
+    } else if (font === 'dyslexic') {
+    setFont('OpenDyslexic');
+    } else if (font === 'hyperlegible') {
+    setFont('Atkinson Hyperlegible');
+    } else if (font === 'Open Sans') {
+    setFont('Open Sans');
+    } else if (font === 'Roboto') {
+    setFont('Roboto');
+    } else if (font === 'Lato') {
+    setFont('Lato');
+    }  else if (font === 'Montserrat') {
+    setFont('Montserrat');
+    }
+    });
+
+    selectContainer.appendChild(select);
+    fontButtonContainer.appendChild(selectContainer);
+    
+
+    const increaseFontButton = document.createElement('button');
+    increaseFontButton.classList.add('font-button');
+    increaseFontButton.textContent = increaseFontText;
+    increaseFontButton.setAttribute('title', increaseFontTitle);
+    increaseFontButton.addEventListener('click', () => setFontSize(1));
+    fontButtonContainer.appendChild(increaseFontButton);
+
+    const decreaseFontButton = document.createElement('button');
+    decreaseFontButton.classList.add('font-button');
+    decreaseFontButton.textContent = decreaseFontText;
+    decreaseFontButton.setAttribute('title', decreaseFontTitle);
+    decreaseFontButton.addEventListener('click', () => setFontSize(-1));
+    fontButtonContainer.appendChild(decreaseFontButton);
+    
+    const translateButton = document.createElement('button');
+    translateButton.classList.add('font-button');
+    translateButton.textContent = translateText;
+    translateButton.setAttribute('title', translateTitle);
+    translateButton.addEventListener('click', toggleGoogleTranslateWidget);
+    fontButtonContainer.appendChild(translateButton);
+
+  // Botón para leer en voz alta
+    const readButton = document.createElement('button');
+    readButton.classList.add('font-button');
+    readButton.textContent = readText;
+    readButton.setAttribute('title', readTextTitle);
+    
+    readButton.addEventListener('click', () => {
+    let selectedText = window.getSelection().toString();
+    let text = '';
+    let lang = document.documentElement.lang;
+    if (selectedText !== '') {
+      text = selectedText;
+      let selectedNode = window.getSelection().anchorNode;
+      while (selectedNode && selectedNode.nodeType !== Node.ELEMENT_NODE) {
+        selectedNode = selectedNode.parentNode;
+      }
+      if (selectedNode) {
+        const selectedLang = selectedNode.getAttribute('lang');
+        if (selectedLang) {
+          lang = selectedLang;
+        }
+      }
+    } else {
+      text = document.body.innerText;
+      const bodyLang = document.body.getAttribute('lang');
+      if (bodyLang) {
+        lang = bodyLang;
+      }
+    }
+
+    utterance.lang = lang;
+    utterance.text = text;
+
+    if (!isReading) {
+      isReading = true;
+      readButton.textContent = `${stopText} (${lang})`;
+      readButton.setAttribute('title', stopTextTitle);
+      speechSynthesis.speak(utterance);
+    } else {
+      isReading = false;
+      readButton.textContent = readText;
+      readButton.setAttribute('title', readTextTitle);
+      speechSynthesis.cancel();
+    }
+
+    utterance.addEventListener('end', () => {
+      isReading = false;
+      readButton.textContent = readText;
+      readButton.setAttribute('title', readTextTitle);
+    });
+  });  
+    
+    fontButtonContainer.appendChild(readButton);
+    
+  // Botón para que la barra esté siempre visible
+    const floatingButton = document.createElement('button');
+    floatingButton.classList.add('font-button');
+    floatingButton.textContent = floatingFloat;
+    floatingButton.setAttribute('title', floatingFloatTitle);
+    floatingButton.addEventListener('click', () => {
+    if (floatingButton.textContent === floatingFix) {
+      fontButtonContainer.style.position = 'static';
+      floatingButton.textContent = floatingFloat;
+      floatingButton.setAttribute('title', floatingFloatTitle);
+      localStorage.setItem('floatState', 'static');
+    } else {
+      fontButtonContainer.style.position = 'fixed';
+      floatingButton.textContent = floatingFix;
+      floatingButton.setAttribute('title', floatingFixTitle);
+      localStorage.setItem('floatState', 'fixed');
+    }
+  });
+
+    
+
+    let floatState = localStorage.getItem('floatState');
+    if (!floatState) {
+      floatState = 'static';
+      floatingButton.textContent = floatingFix;
+      floatingButton.setAttribute('title', floatingFixTitle);
+    }
+    if (floatState === 'fixed') {
+      fontButtonContainer.style.position = 'fixed';
+      floatingButton.textContent = floatingFix;
+      floatingButton.setAttribute('title', floatingFixTitle);
+    } else {
+      fontButtonContainer.style.position = 'static';
+      floatingButton.textContent = floatingFloat;
+      floatingButton.setAttribute('title', floatingFloatTitle);
+    }
+    
+    localStorage.setItem('floatState', floatState);
+    
+  fontButtonContainer.appendChild(floatingButton);
+
+
+    const infoLink = document.createElement('a');
+    infoLink.textContent = infoText;
+    infoLink.href = infoTextLink;
+    infoLink.target = '_blank';
+    infoLink.style.marginLeft = '8px';
+    infoLink.style.fontSize = '12px';
+    fontButtonContainer.appendChild(infoLink);
+
+    
+    infoLink.classList.add('z-index');
+
+    document.body.insertBefore(fontButtonContainer, document.body.firstChild);
+   
+  });
+  
+  
+
+</script>
+</head>
+<body class="exe-web-site" id="exe-node-186"><script type="text/javascript">document.body.className+=" js"</script>
+<div id="content">
+<p id="skipNav"><a href="#main" class="sr-av">Saltar la navegación</a></p>
+<header id="header" ><div id="headerContent">Guía para la elaboración de REA</div></header>
+<nav id="siteNav">
+<ul>
+   <li><a href="index.html" class="daddy main-node">Crea tu REA</a></li>
+   <li><a href="antes_de_empezar.html" class="daddy">Antes de empezar</a>
+   <ul class="other-section">
+      <li><a href="rea.html" class="no-ch">REA</a></li>
+      <li><a href="dua.html" class="no-ch">DUA</a></li>
+      <li><a href="banco_de_recursos.html" class="no-ch">Banco de recursos</a></li>
+   </ul>
+   </li>
+   <li><a href="1_planificamos.html" class="no-ch">1. Planificamos</a></li>
+   <li><a href="2_diseamos.html" class="daddy">2. Diseñamos</a>
+   <ul class="other-section">
+      <li><a href="gua_rea_situacin_de_aprendizaje.html" class="daddy">Guía REA: Situación de Aprendizaje</a>
+      <ul class="other-section">
+         <li><a href="qu_y_cmo_vamos_a_aprender.html" class="no-ch">¿Qué y cómo vamos a aprender?</a></li>
+         <li><a href="secuencia_competencial.html" class="daddy">Secuencia Competencial</a>
+         <ul class="other-section">
+            <li><a href="proceso_1.html" class="no-ch">Proceso 1</a></li>
+            <li><a href="proceso_2.html" class="no-ch">Proceso 2</a></li>
+            <li><a href="proceso_3.html" class="no-ch">Proceso 3</a></li>
+         </ul>
+         </li>
+         <li><a href="evaluacin.html" class="no-ch">Evaluación</a></li>
+         <li><a href="ficha_tcnica.html" class="no-ch">Ficha técnica</a></li>
+      </ul>
+      </li>
+   </ul>
+   </li>
+   <li><a href="3_creamos.html" class="daddy">3. Creamos</a>
+   <ul class="other-section">
+      <li><a href="instalacin_exelearning.html" class="no-ch">Instalación eXeLearning</a></li>
+      <li><a href="importacin_estilo_reaclm.html" class="no-ch">Importación estilo REACLM</a></li>
+      <li><a href="importacin_plantillas.html" class="no-ch">Importación plantillas</a></li>
+      <li><a href="utilizacin_exelearning.html" class="no-ch">Utilización eXeLearning</a></li>
+      <li><a href="compartir_rea_en_el_banco_de_recursos_de_clm.html" class="no-ch">Compartir REA en el banco de recursos de CLM</a></li>
+      <li><a href="errores_comunes.html" class="no-ch">Errores comunes</a></li>
+   </ul>
+   </li>
+   <li><a href="4_evaluamos.html" class="daddy">4. Evaluamos</a>
+   <ul class="other-section">
+      <li><a href="rbrica_reaclm.html" class="no-ch">Rúbrica REACLM</a></li>
+      <li><a href="valoracin_del_rea.html" class="no-ch">Valoración del REA</a></li>
+   </ul>
+   </li>
+   <li class="current-page-parent"><a href="recursos.html" class="current-page-parent daddy">Recursos</a>
+   <ul>
+      <li class="current-page-parent"><a href="fundamentos_de_inteligencia_artificial.html" class="current-page-parent daddy">Fundamentos de inteligencia artificial</a>
+      <ul>
+         <li><a href="mdulo_1_introduccin_a_la_ingeniera_del_prompt.html" class="no-ch">Módulo 1: Introducción a la ingeniería del Prompt</a></li>
+         <li><a href="mdulo_2_claridad_en_el_prompt.html" class="no-ch">Módulo 2: Claridad en el Prompt</a></li>
+         <li id="active"><a href="mdulo_3_especificidad_en_el_prompt.html" class="active no-ch">Módulo 3: Especificidad en el Prompt</a></li>
+         <li><a href="mdulo_4_efectividad_del_prompt.html" class="no-ch">Módulo 4: Efectividad del Prompt</a></li>
+         <li><a href="mdulo_5_tcnicas_avanzadas_de_ingeniera_del_prompt.html" class="no-ch">Módulo 5: Técnicas Avanzadas de Ingeniería del Prompt</a></li>
+         <li><a href="glosario_de_trminos.html" class="no-ch">Glosario de términos</a></li>
+      </ul>
+      </li>
+      <li><a href="derechos_de_autor_y_licencias.html" class="no-ch">Derechos de autor y licencias</a></li>
+   </ul>
+   </li>
+   <li><a href="accesibilidad.html" class="no-ch">Accesibilidad</a></li>
+   <li><a href="crditos.html" class="no-ch">Créditos</a></li>
+</ul>
+</nav>
+<div id='topPagination'>
+<nav class="pagination noprt">
+<a href="mdulo_2_claridad_en_el_prompt.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="mdulo_4_efectividad_del_prompt.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+</nav>
+</div>
+<div id="main-wrapper">
+<section id="main">
+<header id="nodeDecoration"><h1 id="nodeTitle">Módulo 3: Especificidad en el Prompt</h1></header>
+<article class="iDevice_wrapper UDLcontentIdevice em_iDevice" id="id873">
+<div class="iDevice emphasis1" >
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Definición del Tipo de Contenido</h1></header>
+<div class="iDevice_inner">
+<div class="iDevice_content_wrapper">
+<div id="ta873_151_2" class="block iDevice_content">
+<div class="exe-udlContent exe-udlContent-representation"><section class="exe-udlContent-block"><div class="exe-udlContent-content"><div class="exe-udlContent-content-main"><p>Este módulo profundiza en la segunda cualidad crucial de un buen prompt: la especificidad. Una vez que se ha logrado la claridad, el siguiente paso es proporcionar a la IA la mayor cantidad de detalles posible sobre el tipo de contenido que se espera, el formato en el que debe presentarse y los elementos clave que debe incluir. La especificidad es la clave para obtener resultados precisos y relevantes.</p>
+<p data-sourcepos="7:1-7:192">El primer paso para ser específico es indicar claramente a la IA qué tipo de contenido se solicita. Esto ayuda a la IA a enfocar su generación y a evitar respuestas fuera del contexto deseado.</p>
+<p data-sourcepos="9:1-9:31"><strong>Tipos comunes de contenido:</strong></p>
+<ul data-sourcepos="11:1-17:0">
+<li data-sourcepos="11:1-11:103"><strong>Texto:</strong> El tipo más común, que abarca desde párrafos y artículos hasta poemas, guiones y código.</li>
+<li data-sourcepos="12:1-12:88"><strong>Imagen:</strong> Se solicita la generación de una imagen con características específicas.</li>
+<li data-sourcepos="13:1-13:89"><strong>Código:</strong> Se pide la creación de código en un lenguaje de programación determinado.</li>
+<li data-sourcepos="14:1-14:88"><strong>Audio:</strong> Se requiere la generación de audio, como música, voz o efectos de sonido.</li>
+<li data-sourcepos="15:1-15:83"><strong>Video:</strong> Se solicita la creación de un video con características específicas.</li>
+<li data-sourcepos="16:1-17:0"><strong>Datos tabulares:</strong> Se pide la generación de datos organizados en tablas.</li>
+</ul></div></div></section><section class="exe-udlContent-block js-hidden"><header class="exe-udlContent-header"><h2>Ejemplos</h2></header><div class="exe-udlContent-content"><div class="exe-udlContent-content-main">
+<ul>
+<li data-sourcepos="20:1-20:49"><strong>Poco específico:</strong> "Crea algo sobre gatos."</li>
+<li data-sourcepos="21:1-21:111"><strong>Específico:</strong> "Escribe un breve ensayo de tres párrafos sobre el comportamiento de los gatos domésticos."</li>
+<li data-sourcepos="22:1-22:126"><strong>Específico (imagen):</strong> "Genera una imagen fotorrealista de un gato siamés con ojos azules, sentado sobre un cojín rojo."</li>
+<li data-sourcepos="23:1-24:0"><strong>Específico (código):</strong> "Escribe una función en Python que ordene una lista de números de forma ascendente."</li>
+</ul>
+</div></div></section></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="iDevice_wrapper UDLcontentIdevice em_iDevice" id="id874">
+<div class="iDevice emphasis1" >
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Formato deseado</h1></header>
+<div class="iDevice_inner">
+<div class="iDevice_content_wrapper">
+<div id="ta874_152_2" class="block iDevice_content">
+<div class="exe-udlContent exe-udlContent-representation"><section class="exe-udlContent-block"><div class="exe-udlContent-content"><div class="exe-udlContent-content-main"><p data-sourcepos="27:1-27:178">Una vez definido el tipo de contenido, es importante especificar el formato en el que se espera que se presente. Esto ayuda a la IA a estructurar la respuesta de manera adecuada.</p>
+<p data-sourcepos="29:1-29:21"><strong>Formatos comunes:</strong></p>
+<ul data-sourcepos="31:1-37:0">
+<li data-sourcepos="31:1-31:55"><strong>Párrafo:</strong> Texto continuo organizado en párrafos.</li>
+<li data-sourcepos="32:1-32:75"><strong>Lista (con viñetas o numerada):</strong> Elementos organizados en una lista.</li>
+<li data-sourcepos="33:1-33:53"><strong>Tabla:</strong> Datos organizados en filas y columnas.</li>
+<li data-sourcepos="34:1-34:99"><strong>Código (con sintaxis resaltada):</strong> Código formateado con colores para mejorar la legibilidad.</li>
+<li data-sourcepos="35:1-35:86"><strong>Formato Markdown/HTML:</strong> Texto con formato utilizando etiquetas Markdown o HTML.</li>
+<li data-sourcepos="36:1-37:0"><strong>Formato JSON/XML:</strong> Datos estructurados en formato JSON o XML.</li>
+</ul></div></div></section><section class="exe-udlContent-block js-hidden"><header class="exe-udlContent-header"><h2>Ejemplos</h2></header><div class="exe-udlContent-content"><div class="exe-udlContent-content-main">
+<ul>
+<li data-sourcepos="40:1-40:60"><strong>Poco específico:</strong> "Haz una lista de países europeos."</li>
+<li data-sourcepos="41:1-41:116"><strong>Específico:</strong> "Crea una tabla con los nombres, capitales y poblaciones de los 5 países más grandes de Europa."</li>
+<li data-sourcepos="42:1-43:0"><strong>Específico (código):</strong> "Escribe un código en JavaScript que muestre un mensaje de 'Hola Mundo' en la consola, utilizando la sintaxis de ES6."</li>
+</ul>
+</div></div></section></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="iDevice_wrapper UDLcontentIdevice em_iDevice" id="id875">
+<div class="iDevice emphasis1" >
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Elementos clave</h1></header>
+<div class="iDevice_inner">
+<div class="iDevice_content_wrapper">
+<div id="ta875_153_2" class="block iDevice_content">
+<div class="exe-udlContent exe-udlContent-representation"><section class="exe-udlContent-block"><div class="exe-udlContent-content"><div class="exe-udlContent-content-main"><p>Los elementos clave son los componentes específicos que deben incluirse obligatoriamente en la respuesta. Especificar estos elementos asegura que la IA genere contenido que cumpla con los requisitos exactos.</p></div></div></section><section class="exe-udlContent-block js-hidden"><header class="exe-udlContent-header"><h2>Ejemplos</h2></header><div class="exe-udlContent-content"><div class="exe-udlContent-content-main">
+<ul>
+<li data-sourcepos="50:1-50:61"><strong>Poco específico:</strong> "Escribe sobre el cambio climático."</li>
+<li data-sourcepos="51:1-51:151"><strong>Específico:</strong> "Escribe un artículo sobre el cambio climático que incluya las causas principales, los efectos actuales y las posibles soluciones."</li>
+<li data-sourcepos="52:1-53:0"><strong>Específico (imagen):</strong> "Genera una imagen de un paisaje montañoso con un río, un bosque de pinos y un cielo azul con nubes blancas."</li>
+</ul>
+</div></div></section></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="iDevice_wrapper UDLcontentIdevice em_iDevice" id="id876">
+<div class="iDevice emphasis1" >
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Restricciones y limitaciones</h1></header>
+<div class="iDevice_inner">
+<div class="iDevice_content_wrapper">
+<div id="ta876_154_2" class="block iDevice_content">
+<div class="exe-udlContent exe-udlContent-representation"><section class="exe-udlContent-block"><div class="exe-udlContent-content"><div class="exe-udlContent-content-main"><p data-sourcepos="56:1-56:202">Además de especificar lo que se debe incluir, también es útil definir lo que <em>no</em> se debe incluir o los límites de la respuesta. Esto ayuda a evitar contenido no deseado o respuestas demasiado extensas.</p>
+<p data-sourcepos="58:1-58:50"><strong>Tipos comunes de restricciones y limitaciones:</strong></p>
+<ul data-sourcepos="60:1-64:0">
+<li data-sourcepos="60:1-60:72"><strong>Longitud máxima:</strong> Número máximo de palabras, caracteres o líneas.</li>
+<li data-sourcepos="61:1-61:80"><strong>Estilo específico:</strong> Tono formal o informal, lenguaje técnico o coloquial.</li>
+<li data-sourcepos="62:1-62:78"><strong>Exclusión de ciertos temas:</strong> Evitar mencionar ciertos temas o palabras.</li>
+<li data-sourcepos="63:1-64:0"><strong>Formato de salida específico:</strong> Por ejemplo, especificar el tamaño de una imagen o la resolución de un video.</li>
+</ul></div></div></section><section class="exe-udlContent-block js-hidden"><header class="exe-udlContent-header"><h2>Ejemplos</h2></header><div class="exe-udlContent-content"><div class="exe-udlContent-content-main">
+<ul>
+<li data-sourcepos="67:1-67:75"><strong>Poco específico:</strong> "Escribe un resumen de la Segunda Guerra Mundial."</li>
+<li data-sourcepos="68:1-68:136"><strong>Específico:</strong> "Escribe un resumen de la Segunda Guerra Mundial de no más de 200 palabras, evitando mencionar las armas nucleares."</li>
+<li data-sourcepos="69:1-70:0"><strong>Específico (imagen):</strong> "Genera una imagen de un gato, con un tamaño de 512x512 píxeles y en formato PNG."</li>
+</ul>
+</div></div></section></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="iDevice_wrapper pblIdevice em_iDevice em_iDevice_activity" id="id877">
+<div class="iDevice emphasis1" >
+<header class="iDevice_header"><h1 class="iDeviceTitle">Ejercicios prácticos</h1></header>
+<div class="iDevice_inner">
+<div class="iDevice_content_wrapper">
+<div id="ta877_155_2" class="block iDevice_content">
+<div class="pbl-task-description"><p data-sourcepos="73:1-73:112">A continuación, se presentan algunos ejercicios prácticos para reforzar los conceptos aprendidos en este módulo:</p>
+<p data-sourcepos="75:1-75:78"><strong>Ejercicio 1:</strong> Convierte los siguientes prompts a versiones más específicas:</p>
+<ul data-sourcepos="77:1-80:0">
+<li data-sourcepos="77:1-77:37">"Escribe sobre la contaminación."</li>
+<li data-sourcepos="78:1-78:34">"Crea una imagen de un coche."</li>
+<li data-sourcepos="79:1-80:0">"Escribe código para ordenar números."</li>
+</ul>
+<p data-sourcepos="81:1-81:77"><strong>Ejercicio 2:</strong> Añade restricciones y limitaciones a los siguientes prompts:</p>
+<ul data-sourcepos="83:1-85:0">
+<li data-sourcepos="83:1-83:56">"Escribe un artículo sobre la historia de internet."</li>
+<li data-sourcepos="84:1-85:0">"Genera una imagen de un paisaje urbano."</li>
+</ul>
+<p data-sourcepos="86:1-86:129"><strong>Ejercicio 3:</strong> Combina la definición del tipo de contenido, el formato deseado y los elementos clave en los siguientes prompts:</p>
+<ul data-sourcepos="88:1-90:0">
+<li data-sourcepos="88:1-88:29">"Escribe sobre animales."</li>
+<li data-sourcepos="89:1-90:0">"Crea algo visual sobre el espacio."</li>
+</ul></div><div class="iDevice_buttons feedback-button js-required"><input type="button" class="feedbackbutton" value="Mostrar posibles soluciones" /></div><div class="feedback js-feedback js-hidden"><p data-sourcepos="93:1-93:16"><strong>jercicio 1:</strong></p>
+<ul data-sourcepos="95:1-98:0">
+<li data-sourcepos="95:1-95:117">"Escribe un ensayo de 500 palabras sobre las causas y consecuencias de la contaminación plástica en los océanos."</li>
+<li data-sourcepos="96:1-96:102">"Crea una imagen realista de un coche deportivo rojo, con llantas negras y sobre un fondo blanco."</li>
+<li data-sourcepos="97:1-98:0">"Escribe una función en JavaScript que ordene un array de números enteros de forma descendente, utilizando el algoritmo de burbuja."</li>
+</ul>
+<p data-sourcepos="99:1-99:16"><strong>Ejercicio 2:</strong></p>
+<ul data-sourcepos="101:1-103:0">
+<li data-sourcepos="101:1-101:158">"Escribe un artículo sobre la historia de internet, de no más de 1000 palabras, enfocándote en los primeros años y evitando mencionar las redes sociales."</li>
+<li data-sourcepos="102:1-103:0">"Genera una imagen de un paisaje urbano nocturno, con luces de neón y edificios altos, en formato JPG y con una resolución de 1920x1080."</li>
+</ul>
+<p data-sourcepos="104:1-104:16"><strong>Ejercicio 3:</strong></p>
+<ul data-sourcepos="106:1-108:0">
+<li data-sourcepos="106:1-106:126">"Crea una tabla en formato Markdown con los nombres científicos, hábitats y dietas de cinco mamíferos marinos diferentes."</li>
+<li data-sourcepos="107:1-108:0">"Genera una animación corta de 10 segundos en formato GIF que muestre la rotación de la Tierra alrededor del Sol, incluyendo la Luna."</li>
+</ul></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<div id="packageLicense" class="cc cc-by-sa">
+<p><span>Obra publicada con</span> <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Licencia Creative Commons Reconocimiento Compartir igual 4.0</a></p>
+</div>
+</section>
+</div>
+<div id='bottomPagination'>
+<nav class="pagination noprt">
+<a href="mdulo_2_claridad_en_el_prompt.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="mdulo_4_efectividad_del_prompt.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+</nav>
+</div>
+</div>
+<p id="made-with-eXe"><a href="https://exelearning.net/" target="_blank" rel="noopener"><span>Creado con eXeLearning<span> (Ventana nueva)</span></span></a></p><script type="text/javascript" src="_style_js.js"></script></body></html>
